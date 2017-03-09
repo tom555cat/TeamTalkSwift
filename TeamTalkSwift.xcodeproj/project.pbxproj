@@ -258,6 +258,8 @@
 		E95D05981E35DC520013BCEA /* MTTGroupEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95D05971E35DC520013BCEA /* MTTGroupEntity.swift */; };
 		E96B0E951E4C4F35003CD496 /* DDTestAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96B0E941E4C4F35003CD496 /* DDTestAPI.swift */; };
 		E96B0E981E4CAD02003CD496 /* SpellLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96B0E971E4CAD02003CD496 /* SpellLibrary.swift */; };
+		E96BFC2A1E70E6AC0056A273 /* DDChatImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96BFC291E70E6AC0056A273 /* DDChatImageCell.swift */; };
+		E96BFC321E70ED200056A273 /* MTTBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96BFC311E70ED200056A273 /* MTTBaseViewController.swift */; };
 		E978CFB01E5AC2570041E512 /* MTTUsersStatAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = E978CFAF1E5AC2570041E512 /* MTTUsersStatAPI.swift */; };
 		E97F00001E5FBC21007D67C0 /* MTTBubbleModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97FFFFF1E5FBC21007D67C0 /* MTTBubbleModule.swift */; };
 		E97F00171E62AD03007D67C0 /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = E97F00161E62AD03007D67C0 /* TTTAttributedLabel.m */; };
@@ -701,6 +703,8 @@
 		E96B0E8D1E4AC547003CD496 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		E96B0E941E4C4F35003CD496 /* DDTestAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DDTestAPI.swift; sourceTree = "<group>"; };
 		E96B0E971E4CAD02003CD496 /* SpellLibrary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpellLibrary.swift; sourceTree = "<group>"; };
+		E96BFC291E70E6AC0056A273 /* DDChatImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DDChatImageCell.swift; sourceTree = "<group>"; };
+		E96BFC311E70ED200056A273 /* MTTBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MTTBaseViewController.swift; sourceTree = "<group>"; };
 		E978CFAF1E5AC2570041E512 /* MTTUsersStatAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MTTUsersStatAPI.swift; sourceTree = "<group>"; };
 		E97F00151E62AD03007D67C0 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
 		E97F00161E62AD03007D67C0 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
@@ -905,6 +909,7 @@
 		E935D5EF1E14B592007BA117 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				E96BFC301E70ED0A0056A273 /* Base */,
 				E98456871E55529B0032732A /* My(我) */,
 				E98456821E5552490032732A /* Find(发现) */,
 				E984567D1E554EE60032732A /* Contacts(联系人) */,
@@ -1555,6 +1560,14 @@
 			name = Search;
 			sourceTree = "<group>";
 		};
+		E96BFC301E70ED0A0056A273 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				E96BFC311E70ED200056A273 /* MTTBaseViewController.swift */,
+			);
+			name = Base;
+			sourceTree = "<group>";
+		};
 		E97F000F1E62ACEC007D67C0 /* TTAttributedLabel */ = {
 			isa = PBXGroup;
 			children = (
@@ -1579,6 +1592,7 @@
 				E97FFFF31E5EC94D007D67C0 /* DDChatBaseCell.swift */,
 				E97F001A1E62C216007D67C0 /* DDChatCellProtocol.swift */,
 				E97F001C1E63B9DC007D67C0 /* DDChatTextCell.swift */,
+				E96BFC291E70E6AC0056A273 /* DDChatImageCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -2205,6 +2219,7 @@
 				E93AAA061E28A4D10018F639 /* IM.BaseDefine.pb.swift in Sources */,
 				E95D056C1E34EAAE0013BCEA /* kiss_fftr.c in Sources */,
 				E93AAA071E28A4D10018F639 /* IM.Buddy.pb.swift in Sources */,
+				E96BFC2A1E70E6AC0056A273 /* DDChatImageCell.swift in Sources */,
 				E9E4BE6B1E4080CC0067E985 /* FMDatabase.m in Sources */,
 				E95D05701E34EAAE0013BCEA /* ltp.c in Sources */,
 				E95D058A1E34EAAE0013BCEA /* CAXException.cpp in Sources */,
@@ -2234,6 +2249,7 @@
 				E9E3E2DB1E1CD6330030A817 /* DDTcpClientManager.swift in Sources */,
 				E9D7B9E21E22185600C33177 /* DDClientState.swift in Sources */,
 				E935D5F41E14B641007BA117 /* RootTabBarController.swift in Sources */,
+				E96BFC321E70ED200056A273 /* MTTBaseViewController.swift in Sources */,
 				E95D05861E34EAAE0013BCEA /* Encapsulator.m in Sources */,
 				E95D055B1E34EAAE0013BCEA /* cb_search.c in Sources */,
 				E95D056B1E34EAAE0013BCEA /* kiss_fft.c in Sources */,
