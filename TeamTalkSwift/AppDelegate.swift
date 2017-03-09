@@ -16,6 +16,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        _ = DDClientStateMaintenanceManager.sharedInstance
+        _ = RuntimeStatus.sharedInstance
+        
+        /*
+         [DDClientStateMaintenanceManager shareInstance];
+         [RuntimeStatus instance];
+         // 移除webview cache
+         [[NSURLCache sharedURLCache] removeAllCachedResponses];
+        */
+        
+        /*
+         iOS的推送服务
+        */
+        
+        self.window = UIWindow.init(frame: UIScreen.main.bounds)
+        self.window?.backgroundColor = UIColor.white
+        
+        let loginVC = UIStoryboard.init(name: "Login", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
+        let navRoot = UINavigationController.init(rootViewController: loginVC)
+        navRoot.hidesBottomBarWhenPushed = true
+        self.window?.rootViewController = navRoot
+        
+        self.window?.makeKeyAndVisible()
+        
         return true
     }
 

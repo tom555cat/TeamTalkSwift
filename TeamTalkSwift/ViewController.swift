@@ -12,7 +12,18 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("Hello World!")
         // Do any additional setup after loading the view, typically from a nib.
+        let log = LoginModule.sharedInstance
+        log.login(name: "test", password: "test", success: {_ in }, failure: {_ in })
+        //let httpServer = DDHttpServer()
+        //httpServer.getMsgIP(block: {_ in }, failure: {_ in })
+        
+        //let ip = "192.168.54.134"
+        //let port = 8000
+        //DDTcpClientManager.sharedInstance.disconnect()
+        //DDTcpClientManager.sharedInstance.connect(ipAdr: ip, port: port, status: 1)
+        
     }
 
     override func didReceiveMemoryWarning() {

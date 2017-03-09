@@ -7,3 +7,17 @@
 //
 
 import Foundation
+
+typealias UnrequestAPIAnalysis = (NSData) -> Any?
+
+protocol DDAPIUnrequestScheduleProtocol {
+    
+    // 返回数据包中的serviceID
+    func responseServiceID() -> UInt16
+    
+    // 返回数据包中的commandID
+    func responseCommandID() -> UInt16
+    
+    // 解析返回数据包的closure
+    func unrequestAnalysis() -> UnrequestAPIAnalysis
+}

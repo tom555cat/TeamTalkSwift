@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "03166E6751D0A688DA90D2DBC8040B09AA7C8FA7",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "03166E6751D0A688DA90D2DBC8040B09AA7C8FA7" : 9223372036854775807,
+    "0666B8749607A9097FA47BC516240266C4E79D1D" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "4973A5D0-D482-4FCF-AA1B-01E70849715C",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "03166E6751D0A688DA90D2DBC8040B09AA7C8FA7" : "TeamTalkSwift\/",
+    "0666B8749607A9097FA47BC516240266C4E79D1D" : "..\/..\/Documents\/alexeyxo_protobuf-swift\/protobuf-swift"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "TeamTalkSwift",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "TeamTalkSwift.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/tom555cat\/TeamTalkSwift.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "03166E6751D0A688DA90D2DBC8040B09AA7C8FA7"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:alexeyxo\/protobuf-swift.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "0666B8749607A9097FA47BC516240266C4E79D1D"
+    }
+  ]
+}

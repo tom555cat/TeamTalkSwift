@@ -7,3 +7,15 @@
 //
 
 import Foundation
+
+class MTTNotification {
+    
+    class func postNotification(notification: Notification.Name,
+                                userInfo: Dictionary<String, Any>?,
+                                object: Any?) {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: notification, object: object, userInfo: userInfo)
+        }
+    }
+    
+}

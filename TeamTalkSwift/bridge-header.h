@@ -10,5 +10,11 @@
 #define birdge_header_h
 
 #import <CommonCrypto/CommonCrypto.h>
-
+#import "DDReachability.h"
+#import "Encapsulator.h"
+#import "FMDB.h"
+#import "JSDismissiveTextView.h"
+#import "JSMessageInputView.h"
+#import "JSMessageTextView.h"
+#import "TTTAttributedLabel.h"
 #endif /* birdge_header_h */
