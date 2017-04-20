@@ -8,8 +8,34 @@
 
 import Foundation
 
+// 语音
 let VOICE_LENGTH                    = "voiceLength"
 let DDVOICE_PLAYED                  = "voicePlayed"
+
+// 图片
+let DD_IMAGE_LOCAL_KEY              = "local"
+let DD_IMAGE_URL_KEY                = "url"
+
+enum DDMessageType: UInt {
+    case MESSAGE_TYPE_SINGLE        = 1         //单个人会话消息
+    case MESSAGE_TYPE_TEMP_GROUP    = 2         //临时群消息.
+}
+
+enum DDMessageContentType: UInt {
+    case DDMessageTypeText      = 0
+    case DDMessageTypeImage     = 1
+    case DDMessageTypeVoice     = 2
+    case DDMessageEmotion       = 3
+    case MSG_TYPE_AUDIO         = 100
+    case MSG_TYPE_GROUP_AUDIO   = 101
+}
+
+enum DDMessageState: UInt {
+    case DDMessageSending       = 0
+    case DDMessageSendFailure   = 1
+    case DDMessageSendSuccess   = 2
+}
+
 
 class MTTMessageEntity: NSObject {
     
@@ -26,7 +52,7 @@ class MTTMessageEntity: NSObject {
         self.msgContentType = DDMessageContentType.DDMessageTypeText
         self.attach = ""
         self.sessionType = IM_BaseDefine_SessionType.single
-        self.state = DDMessageState.DDMessageSendFailure
+        self.state = DDMessageState.DDMessageSending
     }
     
     init(ID: UInt32,
@@ -47,11 +73,26 @@ class MTTMessageEntity: NSObject {
         self.info = [String: Any]()
     }
     
-    /*  需要chattingModule
-    class func makeMessage(content: String, C) -> MTTMessageEntity {
-     
+    
+    class func makeMessage(content: String, module: ChattingModule, type: DDMessageContentType) -> MTTMessageEntity {
+        let msgTime = Date.timeIntervalBetween1970AndReferenceDate
+        let senderID = RuntimeStatus.sharedInstance.user?.objID
+        var msgType: IM_BaseDefine_MsgType
+        if module.MTTSessionEntity?.sessionType == IM_BaseDefine_SessionType.single  {
+            msgType = .singleText
+        } else {
+            msgType = .groupText
+        }
+        
+        let message = MTTMessageEntity.init(ID: DDMessageModule.getMessageID(), msgType: msgType, msgTime: msgTime, sessionID: (module.MTTSessionEntity?.sessionID)!, senderID: senderID!, msgContent: content, toUserID: (module.MTTSessionEntity?.sessionID)!)
+        message.state = .DDMessageSending
+        message.msgContentType = type
+        module.addShowMessage(message: message)
+        module.updateSessionUpdateTime(time: message.msgTime)
+        
+        return message
     }
-    */
+    
     
     /*
     class func makeMessageFromStream(bodyData: DDDataInputStream) -> MTTMessageEntity {
@@ -101,7 +142,7 @@ class MTTMessageEntity: NSObject {
                     throw MessageError.endOfFile
                 }
                 
-                let voiceLength = UInt32(ch1 << 24) + UInt32(ch2 << 16) + UInt32(ch3 << 8) + UInt32(ch4 << 0)
+                let voiceLength = UInt32(ch1) << 24 + UInt32(ch2) << 16 + UInt32(ch3) << 8 + UInt32(ch4) << 0
                 msgInfo[VOICE_LENGTH] = voiceLength
                 msgInfo[DDVOICE_PLAYED] = 1
             }
@@ -172,7 +213,7 @@ class MTTMessageEntity: NSObject {
                 throw MessageError.endOfFile
             }
             
-            let voiceLength = UInt32(ch1 << 24) + UInt32(ch2 << 16) + UInt32(ch3 << 8) + UInt32(ch4 << 0)
+            let voiceLength = UInt32(ch1) << 24 + UInt32(ch2) << 16 + UInt32(ch3) << 8 + UInt32(ch4) << 0
             msgInfo[VOICE_LENGTH] = voiceLength
             msgInfo[DDVOICE_PLAYED] = 1
 
@@ -249,25 +290,6 @@ class MTTMessageEntity: NSObject {
         case endOfFile
     }
     
-    enum DDMessageType: UInt {
-        case MESSAGE_TYPE_SINGLE        = 1         //单个人会话消息
-        case MESSAGE_TYPE_TEMP_GROUP    = 2         //临时群消息.
-    }
-    
-    enum DDMessageContentType: UInt {
-        case DDMessageTypeText      = 0
-        case DDMessageTypeImage     = 1
-        case DDMessageTypeVoice     = 2
-        case DDMessageEmotion       = 3
-        case MSG_TYPE_AUDIO         = 100
-        case MSG_TYPE_GROUP_AUDIO   = 101
-    }
-    
-    enum DDMessageState: UInt {
-        case DDMessageSending       = 0
-        case DDMessageSendFailure   = 1
-        case DDmessageSendSuccess   = 2
-    }
     
     var msgID: UInt32 = 0                                     // MessageID
     var msgType: IM_BaseDefine_MsgType = .singleText        // 消息类型

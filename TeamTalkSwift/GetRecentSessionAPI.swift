@@ -53,7 +53,7 @@ class GetRecentSessionAPI: DDSuperAPI, DDAPIScheduleProtocol {
                     
                     session.lastMsg = lastMsg
                     session.lastMsgID = sessionInfo.latestMsgId
-                    session.timeInterval = UInt(update_time)
+                    session.timeInterval = TimeInterval(update_time)
                     array.append(session)
                 }
                 return array

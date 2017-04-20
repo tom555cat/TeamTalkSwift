@@ -17,4 +17,8 @@
 #import "JSMessageInputView.h"
 #import "JSMessageTextView.h"
 #import "TTTAttributedLabel.h"
+#import "HPGrowingTextView.h"
+#import "HPTextViewInternal.h"
+#import "RecorderManager.h"
+#import "PlayerManager.h"
 #endif /* birdge_header_h */

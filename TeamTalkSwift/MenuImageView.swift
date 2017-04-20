@@ -86,11 +86,11 @@ class MenuImageView: UIImageView {
     // MARK: Private Function
     private func attachTapHandler() {
         self.isUserInteractionEnabled = true
-        var touch = UITapGestureRecognizer.init(target: self, action: #selector(handleTap(recognizer:)))
+        let touch = UITapGestureRecognizer.init(target: self, action: #selector(handleTap(recognizer:)))
         touch.numberOfTapsRequired = 1
         self.addGestureRecognizer(touch)
         
-        var press = UILongPressGestureRecognizer.init(target: self, action: #selector(longPress(recognizer:)))
+        let press = UILongPressGestureRecognizer.init(target: self, action: #selector(longPress(recognizer:)))
         press.minimumPressDuration = 0.5
         self.addGestureRecognizer(press)
     }

@@ -55,8 +55,8 @@ class RecentUserCell: UITableViewCell {
         self.nameLabel.text = name
     }
     
-    func setTimeStamp(timeStamp: UInt) {
-        let date = Date.init(timeIntervalSince1970: TimeInterval(timeStamp))
+    func setTimeStamp(timeStamp: TimeInterval) {
+        let date = Date.init(timeIntervalSince1970: timeStamp)
         let dateString = date.description
         self.dateLabel.text = dateString
     }
@@ -126,12 +126,12 @@ class RecentUserCell: UITableViewCell {
         
         if session.sessionType == .single {
             self.avatarImageView.backgroundColor = UIColor.clear
-            DDUserModule.sharedInstance.getUserFor(userID: session.sessionID, block: { (user: MTTUserEntity) in
+            DDUserModule.sharedInstance.getUserFor(userID: session.sessionID, block: { (user: MTTUserEntity?) in
                 for view in self.avatarImageView.subviews {
                     view.removeFromSuperview()
                 }
                 self.avatarImageView.image = nil
-                self.setAvatar(avatar: user.getAvatarUrl())
+                self.setAvatar(avatar: (user?.getAvatarUrl())!)
             })
         } else {
             self.avatarImageView.backgroundColor = UIColor.init(red: 228/255.0, green: 227/255.0, blue: 230/255.0, alpha: 1)
@@ -181,8 +181,8 @@ class RecentUserCell: UITableViewCell {
             }
             
             for (_, userID) in ids.enumerated() {
-                DDUserModule.sharedInstance.getUserFor(userID: userID, block: { (user: MTTUserEntity) in
-                    avatars.append(user.getAvatarUrl())
+                DDUserModule.sharedInstance.getUserFor(userID: userID, block: { (user: MTTUserEntity?) in
+                    avatars.append((user?.getAvatarUrl())!)
                 })
             }
             

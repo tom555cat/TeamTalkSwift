@@ -31,25 +31,20 @@ class DDChatTextCell: DDChatBaseCell, TTTAttributedLabelDelegate {
 
         // 过滤空格回车
         let labelContent = content.msgContent.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        self.contentLabel?.text = labelContent
         
         // 设置全局字体颜色
         var linkColor: UIColor?
         var textColor: UIColor?
         switch self.location {
-    
         case .DDBubbleLeft:
             linkColor = self.leftConfig?.linkColor
             textColor = self.leftConfig?.textColor
-        
         case .DDBubbleRight:
             linkColor = self.rightConfig?.linkColor
             textColor = self.rightConfig?.textColor
-            
-        default:
-            break
         }
         self.contentLabel?.textColor = textColor
+        self.contentLabel?.text = labelContent
         
         // link字符样式
         var linkAttributes = [String: Any]()
@@ -136,7 +131,7 @@ class DDChatTextCell: DDChatBaseCell, TTTAttributedLabelDelegate {
     
     override func layoutContentView(content: MTTMessageEntity) {
         let size = self.sizeForContent(content: content)
-        self.contentLabel?.snp.makeConstraints({ make in
+        self.contentLabel?.snp.remakeConstraints({ make in
             make.left.equalTo((self.bubbleImageView?.snp.left)!).offset(self.contentLeftGapWithBubble())
             make.top.equalTo((self.bubbleImageView?.snp.top)!).offset(self.contentUpGapWithBubble())
             make.size.equalTo(CGSize.init(width: size.width+1, height: size.height+1))

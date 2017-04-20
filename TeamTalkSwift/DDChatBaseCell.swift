@@ -10,9 +10,9 @@ import UIKit
 import SnapKit
 import SDWebImage
 
-let dd_avatarEdge: CGFloat = 10                 //头像到边缘的距离
-let dd_avatarBubbleGap: CGFloat = 5             //头像和气泡之间的距离
-let dd_bubbleUpDown: CGFloat = 20
+let dd_avatarEdge: CGFloat = 10                 // 头像到边缘的距离
+let dd_avatarBubbleGap: CGFloat = 5             // 头像和气泡之间的距离
+let dd_bubbleUpDown: CGFloat = 20               // 气泡到上下边缘的距离
 
 typealias DDSendAgain = () -> Void
 typealias DDTapInBubble = () -> Void
@@ -46,6 +46,7 @@ class DDChatBaseCell: UITableViewCell, DDChatCellProtocol, MenuImageViewDelegate
         self.contentLabel?.addGestureRecognizer(press)
         
         self.contentView.backgroundColor = UIColor.clear
+        self.backgroundColor = UIColor.clear
         
         self.userAvatar = UIImageView.init()
         self.userAvatar?.isUserInteractionEnabled = true
@@ -59,10 +60,10 @@ class DDChatBaseCell: UITableViewCell, DDChatCellProtocol, MenuImageViewDelegate
         self.userName = UILabel.init()
         self.userName?.backgroundColor = UIColor.clear
         self.userName?.font = UIFont.systemFont(ofSize: 11)
-        self.userName?.textColor = RGB(r: 102, g: 102, b: 102)
-        // self.userName.textAlignment = .top      以后再进行扩展
+        self.userName?.textColor = RGB(102, 102, 102)
+        //self.userName.textAlignment = .top      //以后再进行扩展
         self.contentView.addSubview(self.userName!)
-        self.userName?.snp.makeConstraints { make in
+        self.userName?.snp.remakeConstraints { make in
             make.size.equalTo(CGSize.init(width: 200, height: 15))
             make.top.equalTo(0)
             make.left.equalTo((self.userAvatar?.snp.right)!).offset(13)
@@ -119,38 +120,35 @@ class DDChatBaseCell: UITableViewCell, DDChatCellProtocol, MenuImageViewDelegate
         // 设置头像位置
         switch self.location {
         case .DDBubbleLeft:
-            self.userAvatar?.snp.makeConstraints({ make in
-                make.size.equalTo(CGSize.init(width: 40, height: 60))
+            self.userAvatar?.snp.remakeConstraints({ make in
+                make.size.equalTo(CGSize.init(width: 40, height: 40))
                 make.top.equalTo(0)
                 make.left.equalTo(dd_avatarEdge)
             })
         case .DDBubbleRight:
-            self.userAvatar?.snp.makeConstraints({ make in
-                make.size.equalTo(CGSize.init(width: 40, height: 60))
+            self.userAvatar?.snp.remakeConstraints({ make in
+                make.size.equalTo(CGSize.init(width: 40, height: 40))
                 make.top.equalTo(0)
-                make.left.equalTo(-dd_avatarEdge)
+                make.right.equalTo(-dd_avatarEdge)
             })
-
-        default:
-            break
         }
         
         // 设置头像和昵称
         self.currentUserID = content.senderId
-        DDUserModule.sharedInstance.getUserFor(userID: content.senderId) { (user: MTTUserEntity) in
-            let avatarURL = URL.init(string: user.getAvatarUrl())
+        DDUserModule.sharedInstance.getUserFor(userID: content.senderId) { (user: MTTUserEntity?) in
+            let avatarURL = URL.init(string: (user?.getAvatarUrl())!)
             self.userAvatar?.sd_setImage(with: avatarURL, placeholderImage: UIImage.init(named: "user_placeholder"))
-            self.userName?.text = user.nick
+            self.userName?.text = user?.nick
         }
         
         // 设置昵称是否隐藏
         if self.session?.sessionType == .single || self.location == .DDBubbleRight {
-            self.userName?.snp.makeConstraints({ make in
+            self.userName?.snp.remakeConstraints({ make in
                 make.height.equalTo(0)
             })
             self.userName?.isHidden = true
         } else {
-            self.userName?.snp.makeConstraints({ make in
+            self.userName?.snp.remakeConstraints({ make in
                 make.height.equalTo(15)
             })
             self.userName?.isHidden = false
@@ -166,50 +164,48 @@ class DDChatBaseCell: UITableViewCell, DDChatCellProtocol, MenuImageViewDelegate
         switch self.location {
         case .DDBubbleLeft:
             bubbleImage = UIImage.init(named: (self.leftConfig?.textBgImage)!)
-            bubbleImage?.stretchableImage(withLeftCapWidth: Int((self.leftConfig?.stretchy.left)!), topCapHeight: Int((self.leftConfig?.stretchy.top)!))
-            self.bubbleImageView?.snp.makeConstraints({ make in
+            bubbleImage = bubbleImage?.stretchableImage(withLeftCapWidth: Int((self.leftConfig?.stretchy.left)!), topCapHeight: Int((self.leftConfig?.stretchy.top)!))
+            self.bubbleImageView?.snp.remakeConstraints({ make in
                 make.left.equalTo((self.userAvatar?.snp.right)!).offset(dd_avatarBubbleGap)
-                make.top.equalTo((self.userName?.snp.bottom)!)
+                make.top.equalTo((self.userName?.snp.bottom)!).offset(0)
                 make.size.equalTo(CGSize.init(width: CGFloat(bubbleWidth), height: CGFloat(bubbleheight)))
             })
+            
         case .DDBubbleRight:
             bubbleImage = UIImage.init(named: (self.rightConfig?.textBgImage)!)
-            bubbleImage?.stretchableImage(withLeftCapWidth: Int((self.rightConfig?.stretchy.left)!), topCapHeight: Int((self.rightConfig?.stretchy.top)!))
-            self.bubbleImageView?.snp.makeConstraints({ make in
+            bubbleImage = bubbleImage?.stretchableImage(withLeftCapWidth: Int((self.rightConfig?.stretchy.left)!), topCapHeight: Int((self.rightConfig?.stretchy.top)!))
+            self.bubbleImageView?.snp.remakeConstraints({ make in
                 make.right.equalTo((self.userAvatar?.snp.left)!).offset(-dd_avatarBubbleGap)
-                make.top.equalTo((self.userName?.snp.bottom)!)
+                make.top.equalTo((self.userName?.snp.bottom)!).offset(0)
                 make.size.equalTo(CGSize.init(width: CGFloat(bubbleWidth), height: CGFloat(bubbleheight)))
             })
-        default:
-            break
         }
         self.bubbleImageView?.image = bubbleImage
         
         // 设置菊花位置
         switch self.location {
         case .DDBubbleLeft:
-            self.activityView?.snp.makeConstraints({ make in
+            self.activityView?.snp.remakeConstraints({ make in
                 make.left.equalTo((self.bubbleImageView?.snp.right)!).offset(10)
                 make.bottom.equalTo((self.bubbleImageView?.snp.bottom)!)
             })
-            self.sendFailuredImageView?.snp.makeConstraints({ make in
+            self.sendFailuredImageView?.snp.remakeConstraints({ make in
                 make.left.equalTo((self.bubbleImageView?.snp.right)!).offset(10)
                 make.bottom.equalTo((self.bubbleImageView?.snp.bottom)!)
             })
             
         case .DDBubbleRight:
-            self.activityView?.snp.makeConstraints({ make in
+            self.activityView?.snp.remakeConstraints({ make in
                 make.right.equalTo((self.bubbleImageView?.snp.left)!).offset(-10)
                 make.bottom.equalTo((self.bubbleImageView?.snp.bottom)!)
             })
-            self.sendFailuredImageView?.snp.makeConstraints({ make in
+            self.sendFailuredImageView?.snp.remakeConstraints({ make in
                 make.right.equalTo((self.bubbleImageView?.snp.left)!).offset(-10)
                 make.bottom.equalTo((self.bubbleImageView?.snp.bottom)!)
             })
-            
-        default:
-            break
         }
+        
+        var showMenu: UInt = 0
         
         switch content.state {
         case .DDMessageSending:
@@ -218,15 +214,13 @@ class DDChatBaseCell: UITableViewCell, DDChatCellProtocol, MenuImageViewDelegate
         case .DDMessageSendFailure:
             self.activityView?.stopAnimating()
             self.sendFailuredImageView?.isHidden = false
-        case .DDmessageSendSuccess:
+            showMenu = DDImageShowMenu.DDShowSendAgain.rawValue
+        case .DDMessageSendSuccess:
             self.activityView?.stopAnimating()
             self.sendFailuredImageView?.isHidden = true
-        default:
-            break
         }
         
         // 设置菜单
-        var showMenu: UInt = 0
         switch content.msgContentType {
         case .DDMessageTypeImage:
             showMenu = showMenu | DDImageShowMenu.DDShowPreview.rawValue
@@ -259,7 +253,7 @@ class DDChatBaseCell: UITableViewCell, DDChatCellProtocol, MenuImageViewDelegate
     
     func openProfilePage() {
         if (self.currentUserID != nil) {
-            DDUserModule.sharedInstance.getUserFor(userID: self.currentUserID!, block: { (user: MTTUserEntity) in
+            DDUserModule.sharedInstance.getUserFor(userID: self.currentUserID!, block: { (user: MTTUserEntity?) in
                 /*   以后再添加
                  PublicProfileViewControll *public = [PublicProfileViewControll new];
                  public.user=user;
@@ -322,7 +316,9 @@ class DDChatBaseCell: UITableViewCell, DDChatCellProtocol, MenuImageViewDelegate
     }
     
     func tapTheImageView(imageView: MenuImageView) {
-        self.tapInBubble!()
+        if self.tapInBubble != nil {
+            self.tapInBubble!()
+        }
     }
     
     // MARK: - Property

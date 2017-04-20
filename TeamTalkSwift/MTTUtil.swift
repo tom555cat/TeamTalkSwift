@@ -101,4 +101,34 @@ class MTTUtil {
         
         return CGSize.init(width: width, height: height)
     }
+    
+    //MARK: String转化为JSON Dictionary
+    class func jsonStringToDictionary(text: String) -> [String: Any]? {
+        if let data = text.data(using: .utf8) {
+            do {
+                return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+        return nil
+    }
+    
+    class func getMsfsUrl() -> String {
+        return UserDefaults.standard.object(forKey: "msfsurl") as! String
+    }
+    
+    class func getFirstChar(str: String) -> String {
+        if str.characters.count == 0 {
+            return "#"
+        }
+        let firstChar = str.substring(to: str.index(after: str.startIndex))
+        if (firstChar >= "a" && firstChar <= "z") || (firstChar >= "A" && firstChar <= "Z") {
+            return firstChar
+        } else {
+            return "汉字"
+        }
+    }
+    
+    //class pinyinFirstLetter()
 }

@@ -14,6 +14,20 @@ let SCREEN_HEIGHT = UIScreen.main.bounds.size.height
 // 屏幕宽度
 let SCREEN_WIDTH = UIScreen.main.bounds.size.width
 
+let DDINPUT_MIN_HEIGHT: CGFloat = 44.0
+let DDINPUT_HEIGHT: CGFloat = 44   // 原来是self.chatInputView.size.height
+let SYSTEM_VERSION = Float(UIDevice.current.systemVersion)!
+let STATUSBAR_HEIGHT = UIApplication.shared.statusBarFrame.size.height
+let NAVBAR_HEIGHT = 44 + ((SYSTEM_VERSION >= Float(7)) ? STATUSBAR_HEIGHT : 0)
+let FULL_WIDTH = SCREEN_WIDTH
+let FULL_HEIGHT = SCREEN_HEIGHT - ((SYSTEM_VERSION >= Float(7)) ? 0 : STATUSBAR_HEIGHT)
+let CONTENT_HEIGHT = FULL_HEIGHT - NAVBAR_HEIGHT
+
+
+func PhotosMessageDir() -> URL {
+    return String.documentPath().appendingPathComponent("PhotosMessageDir")
+}
+
 let APP_NAME = "TeamTalk"
 
 let LOCAL_MSG_BEGIN_ID:UInt32 = 1000000
@@ -22,6 +36,7 @@ let MAX_CHAT_TEXT_WIDTH = SCREEN_WIDTH - 70.0 * 2
 
 // 图片
 let DD_MESSAGE_IMAGE_PREFIX = "&$#@~^@[{:"
+let DD_MESSAGE_IMAGE_SUFFIX = ":}]&$~@#@"
 
 // url phone email 正则
 
@@ -44,8 +59,12 @@ func TTBG() -> UIColor {
     return UIColor.init(red: 239/255.0, green: 239/255.0, blue: 244/255.0, alpha: 1)
 }
 
-func RGB(r: Int, g: Int, b: Int) ->UIColor {
+func RGB(_ r: Int, _  g: Int, _ b: Int) ->UIColor {
     return UIColor.init(red: CGFloat(Double(r)/255.0), green: CGFloat(Double(g)/255.0), blue: CGFloat(Double(b)/255.0), alpha: 1)
+}
+
+func RGBA(_ r: Int, _ g: Int, _ b: Int, _ a: Float) ->UIColor {
+    return UIColor.init(red: CGFloat(Double(r)/255.0), green: CGFloat(Double(g)/255.0), blue: CGFloat(Double(b)/255.0), alpha: CGFloat(a))
 }
 
 let DDNotificationTcpLinkConnectComplete = NSNotification.Name("Notification_Tcp_Link_connect_complete")

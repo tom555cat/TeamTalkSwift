@@ -44,7 +44,7 @@ class MsgReadACKAPI: DDSuperAPI, DDAPIScheduleProtocol {
                 readAck.userId = 0
                 readAck.sessionId = MTTUtil.changeIDToOriginal(sessionID: array[0] as! String)
                 readAck.msgId = array[1] as! UInt32
-                readAck.sessionType = array[2] as! IM_BaseDefine_SessionType
+                readAck.sessionType = IM_BaseDefine_SessionType.init(rawValue: array[2] as! Int)!
                 let dataout = DDDataOutputStream()
                 dataout.writeInt(v: 0)
                 dataout.writeTcpProtocolHeader(sId: SID.SID_MSG.rawValue, cId: SID_MSG.IM_MSG_DATA_READ_ACK.rawValue, seqNo: seqNo)

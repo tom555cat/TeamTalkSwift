@@ -15,7 +15,7 @@ class MTTSessionEntity {
         self.sessionType = type
         self.unReadMsgCount = 0
         self.lastMsg = ""
-        self.timeInterval = UInt(Date.timeIntervalBetween1970AndReferenceDate)
+        self.timeInterval = Date.timeIntervalBetween1970AndReferenceDate
     }
     
     convenience init(sessionID: String, name: String, type: IM_BaseDefine_SessionType) {
@@ -33,7 +33,7 @@ class MTTSessionEntity {
         self.name = group.name
     }
     
-    func updateUpdateTime(date: UInt) {
+    func updateUpdateTime(date: TimeInterval) {
         self.timeInterval = date
         MTTDatabaseUtil.sharedInstance.updateRecentSession(session: self) { (error: NSError?) in
             // 什么都不做
@@ -61,7 +61,7 @@ class MTTSessionEntity {
     var sessionType: IM_BaseDefine_SessionType
     var name: String = ""
     var unReadMsgCount: Int = 0
-    var timeInterval: UInt = 0
+    var timeInterval: TimeInterval = 0
     var orginId: String = ""
     var isShield: Bool = false
     var isFixedTop: Bool = false

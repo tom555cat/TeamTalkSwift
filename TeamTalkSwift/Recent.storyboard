@@ -195,6 +195,60 @@
             </objects>
             <point key="canvasLocation" x="1260" y="-161.46926536731635"/>
         </scene>
+        <!--Chatting Main View Controller-->
+        <scene sceneID="esT-3G-NwT">
+            <objects>
+                <viewController storyboardIdentifier="ChatVC" id="NVK-bI-vib" customClass="ChattingMainViewController" customModule="TeamTalkSwift" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="E3s-ZS-bV2"/>
+                        <viewControllerLayoutGuide type="bottom" id="vh4-2w-8gE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="wFv-AF-I5Y">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="vK8-by-v0o">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="623"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="vK8-by-v0o" firstAttribute="top" secondItem="wFv-AF-I5Y" secondAttribute="top" id="IVp-ZX-BXC"/>
+                            <constraint firstItem="vK8-by-v0o" firstAttribute="leading" secondItem="wFv-AF-I5Y" secondAttribute="leading" id="Ykh-io-26M"/>
+                            <constraint firstItem="vh4-2w-8gE" firstAttribute="top" secondItem="vK8-by-v0o" secondAttribute="bottom" constant="44" id="Zmi-SG-9FX"/>
+                            <constraint firstAttribute="trailing" secondItem="vK8-by-v0o" secondAttribute="trailing" id="iJI-Ey-9fr"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="vK8-by-v0o" id="aGl-Ef-t2w"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0hX-fI-NBh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2104.8000000000002" y="-161.46926536731635"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="zgW-Nz-gMY">
+            <objects>
+                <viewController storyboardIdentifier="testVC" id="TPN-A8-8ph" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="xga-yP-0JU"/>
+                        <viewControllerLayoutGuide type="bottom" id="UWK-d4-A6R"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="PAs-ey-c27">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="a8a-oI-UMZ"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="F0x-M9-Mjs" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3409" y="-134"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="1Em-qe-szr">
             <objects>

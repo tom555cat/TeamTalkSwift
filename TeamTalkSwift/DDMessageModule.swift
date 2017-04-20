@@ -61,9 +61,9 @@ class DDMessageModule {
         let receiveMessageAPI = DDReceiveMessageAPI()
         _ = receiveMessageAPI.registerAPIInAPIScheduleReceiveData { (object: Any, error: NSError?) in
             if let message = object as? MTTMessageEntity {
-                message.state = .DDmessageSendSuccess
+                message.state = .DDMessageSendSuccess
                 let rmack = DDReceiveMessageACKAPI()
-                rmack.requestWithObject(object: [message.senderId, message.msgID, message.sessionId, message.sessionType], completion: { (object: Any?, error: Error?) in
+                rmack.requestWithObject(object: [message.senderId, message.msgID, message.sessionId, message.sessionType.rawValue], completion: { (object: Any?, error: Error?) in
                     // 什么都不做
                 })
                 _ = self.p_spliteMessage(message: message)
@@ -102,20 +102,20 @@ class DDMessageModule {
                         let imageContent = String.init(format: "%@%@", DD_MESSAGE_IMAGE_PREFIX, content.substring(with: content.startIndex..<(suffixRange?.upperBound)!))
                         let messageEntity = MTTMessageEntity.init(ID: DDMessageModule.getMessageID(), msgType: message.msgType, msgTime: message.msgTime, sessionID: message.sessionId, senderID: message.senderId, msgContent: imageContent, toUserID: message.toUserID)
                         messageEntity.msgContentType = .DDMessageTypeImage
-                        messageEntity.state = .DDmessageSendSuccess
+                        messageEntity.state = .DDMessageSendSuccess
                         messageContentArray.append(messageEntity)
                         
                         let secondComponent = content.substring(with: (suffixRange?.upperBound)!..<content.endIndex)
                         if secondComponent.characters.count > 0 {
                             let secondMessageEntity = MTTMessageEntity.init(ID: DDMessageModule.getMessageID(), msgType: message.msgType, msgTime: message.msgTime, sessionID: message.sessionId, senderID: message.senderId, msgContent: secondComponent, toUserID: message.toUserID)
                             secondMessageEntity.msgContentType = .DDMessageTypeText
-                            secondMessageEntity.state = .DDmessageSendSuccess
+                            secondMessageEntity.state = .DDMessageSendSuccess
                             messageContentArray.append(secondMessageEntity)
                         }
                     } else {
                         let messageEntity = MTTMessageEntity.init(ID: DDMessageModule.getMessageID(), msgType: message.msgType, msgTime: message.msgTime, sessionID: message.sessionId, senderID: message.senderId, msgContent: content, toUserID: message.toUserID)
                         messageEntity.msgContentType = .DDMessageTypeText
-                        messageEntity.state = .DDmessageSendSuccess
+                        messageEntity.state = .DDMessageSendSuccess
                         messageContentArray.append(messageEntity)
                     }
                 }

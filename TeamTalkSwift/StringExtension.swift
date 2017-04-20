@@ -37,4 +37,40 @@ extension String {
         }
         return directorPath.path
     }
+    
+    static func documentPath() -> URL {
+        
+        let paths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+        let documentDirectory = paths[0]
+        
+        return URL.init(fileURLWithPath: documentDirectory)
+    }
+    
+    // 让url所指的内容避免被itune备份
+    /*
+    static func addSkipBackupAttributeToItemAtURL(url: URL?) -> Bool {
+        if url == nil {
+            return false
+        }
+        
+        let systemVersion = UIDevice.current.systemVersion
+        let version = Float.init(systemVersion)
+        if version! < Float(5.0) {
+            return true
+        } else if version! > Float(5.1) {
+            assert(FileManager.default.fileExists(atPath: (url?.absoluteString)!))
+            
+            do {
+                var resourceValues = URLResourceValues()
+                resourceValues.isExcludedFromBackup = true
+                //url?.setResourceValues(resourceValues)
+                return true
+            } catch {
+                DDLog("failed")
+            }
+        }
+        
+        // 以后还要修改
+    }
+     */
 }

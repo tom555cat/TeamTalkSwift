@@ -33,36 +33,39 @@ class ChattingModule {
      *  加载历史消息接口，这里会适时插入时间
      *
      *  @param completion 加载完成
+     *
+     *  原名叫 loadMoreHistoryCompletion
      */
-    func loadMoreHistoryCompletion(completion: @escaping DDChatLoadMoreHistoryCompletion) {
+    func loadMoreHistory(loadMoreHistoryCompletion: @escaping DDChatLoadMoreHistoryCompletion) {
         let count = self.p_getMessageCount()
         
         MTTDatabaseUtil.sharedInstance.loadMessage(sessionID: (self.MTTSessionEntity?.sessionID)!, pagecount: DD_PAGE_ITEM_COUNT, index: count) { (messages: Array<MTTMessageEntity>, error: Error?) in
             
             if DDClientState.sharedInstance.networkState == .DDNetWorkDisconnect {
-                self.p_addHistoryMessages(messages: messages, completion: completion)
+                self.p_addHistoryMessages(messages: messages, loadMoreHistoryCompletion: loadMoreHistoryCompletion)
             } else {
                 if messages.count != 0 {
                     let isHaveMissMsg = self.p_isHaveMissMsg(messages: messages)
                     if (isHaveMissMsg || (self.getMiniMsgId() != self.getMaxMsgId(array: messages))) {
                         // 如果有缺失的消息，则从服务器端再重新获取
-                        self.loadHistoryMessageFromServer(fromMsgID: self.getMiniMsgId(), completion: { (addCount: UInt32, error: NSError?) in
+                        // 就我认为，loadMoreHistoryFromServerCompletion不需要对addCount进行判断，直接再p_addHistoryMessages就行
+                        self.loadHistoryMessageFromServer(fromMsgID: self.getMiniMsgId(), loadMoreHistoryFromServerCompletion: { (addCount: UInt32, error: NSError?) in
                             if addCount > 0 {
-                                completion(addCount, error)
+                                loadMoreHistoryCompletion(addCount, error)
                             } else {
-                                self.p_addHistoryMessages(messages: messages, completion: completion)
+                                self.p_addHistoryMessages(messages: messages, loadMoreHistoryCompletion: loadMoreHistoryCompletion)
                             }
                         })
                         
                     } else {
                         // 检查消息是否连续
-                        self.p_addHistoryMessages(messages: messages, completion: completion)
+                        self.p_addHistoryMessages(messages: messages, loadMoreHistoryCompletion: loadMoreHistoryCompletion)
                     }
                 } else {
                     // 数据库中已经获取不到消息
                     // 拿出当前最小的msgID去服务器端获取
-                    self.loadHistoryMessageFromServer(fromMsgID: self.getMiniMsgId(), completion: { (addCount: UInt32, error: NSError?) in
-                        completion(addCount, error)
+                    self.loadHistoryMessageFromServer(fromMsgID: self.getMiniMsgId(), loadMoreHistoryFromServerCompletion: { (addCount: UInt32, error: NSError?) in
+                        loadMoreHistoryCompletion(addCount, error)
                     })
                 }
             }
@@ -71,12 +74,12 @@ class ChattingModule {
     
     func loadAllHistoryCompletion(message: MTTMessageEntity, completion: @escaping DDChatLoadMoreHistoryCompletion) {
         MTTDatabaseUtil.sharedInstance.loadMessage(sessionID: (self.MTTSessionEntity?.sessionID)!, afterMessage: message) { (messages: Array<MTTMessageEntity>, error: Error?) in
-            self.p_addHistoryMessages(messages: messages, completion: completion)
+            self.p_addHistoryMessages(messages: messages, loadMoreHistoryCompletion: completion)
         }
     }
     
     func loadHistoryUntilCommodity(message: MTTMessageEntity, completion: DDChatLoadMoreHistoryCompletion) {
-    
+        
     }
     
     func messageHeight(message: MTTMessageEntity) -> Float {
@@ -87,7 +90,7 @@ class ChattingModule {
             return (textCell?.cellHeightForMessage(message: message))!
             
         } else if message.msgContentType == .DDMessageTypeVoice {
-        
+            
             return 60
             
         } else if message.msgContentType == .DDMessageTypeImage {
@@ -95,6 +98,7 @@ class ChattingModule {
             var height = 150
             var urlString = message.msgContent
             urlString = urlString.replacingOccurrences(of: DD_MESSAGE_IMAGE_PREFIX, with: "")
+            urlString = urlString.replacingOccurrences(of: DD_MESSAGE_IMAGE_SUFFIX, with: "")
             let url = URL.init(string: urlString)
             
             // 从SDWebImage中根据URL获取保存在本地的图片
@@ -125,17 +129,19 @@ class ChattingModule {
     }
     
     func addShowMessage(message: MTTMessageEntity) {
-        if self.ids.contains(message.msgID) {
+        if !self.ids.contains(message.msgID) {
+            // 如果新消息时间大于之前最后消息时间一定程度，再增添一条prompt消息
             if message.msgTime - self.latestDate > showPromptGap {
                 self.latestDate = message.msgTime
-                var prompt = DDPromptEntity()
+                let prompt = DDPromptEntity()
                 let date = Date.init(timeIntervalSince1970: message.msgTime)
                 prompt.message = date.description    // 这个还需要自己改
                 self.showingMessages.append(prompt)
             }
             
-            let array = DDMessageModule.sharedInstance.p_spliteMessage(message: message)
+            let array = ChattingModule.p_spliteMessage(message: message)
             for obj in array {
+                DDLog(obj.msgContent)
                 self.showingMessages.append(obj)
             }
         }
@@ -148,65 +154,64 @@ class ChattingModule {
     }
     
     func scanDBAndFixIDList(closure: (Bool) -> Void) {
-    
+        
     }
     
-    func updateSessionUpdateTime(time: UInt) {
+    func updateSessionUpdateTime(time: TimeInterval) {
         self.MTTSessionEntity?.updateUpdateTime(date: time)
-        self.latestDate = TimeInterval(time)
+        self.latestDate = time
     }
     
     func clearChatData() {
-    
+        fatalError("还需要")
     }
     
     func m_clearScanRecord() {
-    
+        fatalError("还需要")
     }
     
     func showMessagesAddCommodity(message: MTTMessageEntity) {
-    
+        fatalError("还需要")
     }
     
     func getCurrentUser(closure: @escaping (MTTUserEntity) -> Void) {
-        DDUserModule.sharedInstance.getUserFor(userID: (self.MTTSessionEntity?.sessionID)!) { (user: MTTUserEntity) in
-            closure(user)
+        DDUserModule.sharedInstance.getUserFor(userID: (self.MTTSessionEntity?.sessionID)!) { (user: MTTUserEntity?) in
+            closure(user!)
         }
     }
     
-    func loadHistoryMessageFromServer(fromMsgID msgID: UInt32, loadCount count: UInt32, completion: @escaping DDChatLoadMoreHistoryCompletion) {
+    func loadHistoryMessageFromServer(fromMsgID msgID: UInt32, loadCount count: UInt32, loadMoreHistoryFromServerCompletion: @escaping DDChatLoadMoreHistoryCompletion) {
         if self.MTTSessionEntity != nil {
             if msgID != 1 {
                 DDMessageModule.sharedInstance.getMessageFromServer(fromMsgID: msgID, session: self.MTTSessionEntity!, count: count, block: { (response: [MTTMessageEntity], error: NSError?) in
+                    
                     let msgID = self.getMaxMsgId(array: response)
                     if msgID != 0 {
                         MTTDatabaseUtil.sharedInstance.insertMessage(messageArray: response, success: {
                             let readACK = MsgReadACKAPI()
-                            readACK.requestWithObject(object: [self.MTTSessionEntity?.sessionID, msgID, self.MTTSessionEntity?.sessionType], completion: { (response: Any?, error: Error?) in
-                                //
+                            readACK.requestWithObject(object: [self.MTTSessionEntity?.sessionID, msgID, self.MTTSessionEntity?.sessionType.rawValue], completion: { (response: Any?, error: Error?) in
+                                // 什么都不做
                             })
-                            }, failure: { (String) in
-                                //
+                        }, failure: { (String) in
+                            // 什么都不做
                         })
                         
                         let count = self.p_getMessageCount()
                         MTTDatabaseUtil.sharedInstance.loadMessage(sessionID: (self.MTTSessionEntity?.sessionID)!, pagecount: DD_PAGE_ITEM_COUNT, index: count, completion: { (messages: Array<MTTMessageEntity>, error: NSError?) in
-                            self.p_addHistoryMessages(messages: messages, completion: completion)
-                            completion(UInt32(response.count), error)
+                            self.p_addHistoryMessages(messages: messages, loadMoreHistoryCompletion: loadMoreHistoryFromServerCompletion)
+                            loadMoreHistoryFromServerCompletion(UInt32(response.count), error)
                         })
+                        
+                    } else {
+                        loadMoreHistoryFromServerCompletion(0, nil)
                     }
-                    completion(0, nil)
                 })
             }
         }
     }
     
-    func loadHistoryMessageFromServer(fromMsgID msgID: UInt32, completion: @escaping DDChatLoadMoreHistoryCompletion) {
-        self.loadHistoryMessageFromServer(fromMsgID: msgID, loadCount: 19, completion: completion)
-    }
-    
-    class func p_spliteMessage(message: MTTMessageEntity) {
-    
+    func loadHistoryMessageFromServer(fromMsgID msgID: UInt32, loadMoreHistoryFromServerCompletion: @escaping DDChatLoadMoreHistoryCompletion) {
+        self.loadHistoryMessageFromServer(fromMsgID: msgID, loadCount: 19, loadMoreHistoryFromServerCompletion: loadMoreHistoryFromServerCompletion)
     }
     
     func getNewMsg(completion: @escaping DDChatLoadMoreHistoryCompletion) {
@@ -255,7 +260,7 @@ class ChattingModule {
         return earliestTime
     }
     
-    private func p_addHistoryMessages(messages: [MTTMessageEntity], completion: DDChatLoadMoreHistoryCompletion) {
+    private func p_addHistoryMessages(messages: [MTTMessageEntity], loadMoreHistoryCompletion: DDChatLoadMoreHistoryCompletion) {
         let tempEarliestDate = self.p_getEarliestDate(messages: messages)
         var tempLatestDate: TimeInterval = 0
         let itemCount = self.showingMessages.count
@@ -273,7 +278,8 @@ class ChattingModule {
                 tempMessages.append(prompt)
             }
             tempLatestDate = message.msgTime
-            let array = DDMessageModule.sharedInstance.p_spliteMessage(message: message)
+            //let array = DDMessageModule.sharedInstance.p_spliteMessage(message: message)
+            let array = ChattingModule.p_spliteMessage(message: message)
             for obj in array {
                 self.ids.append(message.msgID)
                 tempMessages.append(obj)
@@ -285,15 +291,16 @@ class ChattingModule {
             self.earliestDate = tempEarliestDate
             self.latestDate = tempLatestDate
         } else {
-            self.showingMessages.append(contentsOf: tempMessages)
             // 需要后续去调整
-            // [self.showingMessages insertObjects:tempMessages atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [tempMessages count])]];
+            //[self.showingMessages insertObjects:tempMessages atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [tempMessages count])]];
+            self.showingMessages.removeFirst(tempMessages.count)
+            self.showingMessages.insert(contentsOf: tempMessages, at: 0)
             self.earliestDate = tempEarliestDate
         }
         
         let newItemCount = self.showingMessages.count
         let gap = newItemCount - itemCount
-        completion(UInt32(gap), nil)
+        loadMoreHistoryCompletion(UInt32(gap), nil)
     }
     
     private func getMaxMsgId(array: [Any]) -> UInt32{
@@ -344,6 +351,58 @@ class ChattingModule {
         }
         
         return minMsgID
+    }
+    
+    private class func p_spliteMessage(message: MTTMessageEntity) -> [MTTMessageEntity] {
+        message.msgContent = message.msgContent.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        var messageContentArray = [MTTMessageEntity]()
+        
+        if message.msgContent.range(of: DD_MESSAGE_IMAGE_PREFIX) != nil {
+            
+            let messageContent = message.msgContent
+            if messageContent.range(of: DD_MESSAGE_IMAGE_PREFIX) != nil && messageContent.range(of: DD_IMAGE_LOCAL_KEY) != nil && messageContent.range(of: DD_IMAGE_URL_KEY) != nil {
+                let messageEntity = MTTMessageEntity.init(ID: DDMessageModule.getMessageID(), msgType: message.msgType, msgTime: message.msgTime, sessionID: message.sessionId, senderID: message.senderId, msgContent: messageContent, toUserID: message.toUserID)
+                messageEntity.msgContentType = .DDMessageTypeImage
+                messageEntity.state = .DDMessageSendSuccess
+                
+            } else {
+                
+                let tempMessageContent = messageContent.components(separatedBy: DD_MESSAGE_IMAGE_PREFIX)
+                for content in tempMessageContent {
+                    if content.characters.count > 0 {
+                        let suffixRange = content.range(of: DD_MESSAGE_IMAGE_SUFFIX)
+                        if suffixRange != nil {
+                            // 是图片，再拆分
+                            let imageContent = String.init(format: "%@%@", DD_MESSAGE_IMAGE_PREFIX, content.substring(to: (suffixRange?.upperBound)!))
+                            let messageEntity = MTTMessageEntity.init(ID: DDMessageModule.getMessageID(), msgType: message.msgType, msgTime: message.msgTime, sessionID: message.sessionId, senderID: message.senderId, msgContent: imageContent, toUserID: message.toUserID)
+                            messageEntity.msgContentType = .DDMessageTypeImage
+                            messageEntity.state = .DDMessageSendSuccess
+                            messageContentArray.append(messageEntity)
+                            
+                            var secondComponent = content.substring(from: (suffixRange?.upperBound)!)
+                            if secondComponent.characters.count > 0 {
+                                let secondMessageEntity = MTTMessageEntity.init(ID: DDMessageModule.getMessageID(), msgType: message.msgType, msgTime: message.msgTime, sessionID: message.sessionId, senderID: message.senderId, msgContent: secondComponent, toUserID: message.toUserID)
+                                secondMessageEntity.msgContentType = .DDMessageTypeText
+                                secondMessageEntity.state = .DDMessageSendSuccess
+                                messageContentArray.append(secondMessageEntity)
+                            }
+                            
+                        } else {
+                            
+                            let messageEntity = MTTMessageEntity.init(ID: DDMessageModule.getMessageID(), msgType: message.msgType, msgTime: message.msgTime, sessionID: message.sessionId, senderID: message.senderId, msgContent: content, toUserID: message.toUserID)
+                            messageEntity.state = .DDMessageSendSuccess
+                            messageContentArray.append(messageEntity)
+                        }
+                    }
+                }
+            }
+        }
+        
+        if messageContentArray.count == 0 {
+            messageContentArray.append(message)
+        }
+        
+        return messageContentArray
     }
 }
 

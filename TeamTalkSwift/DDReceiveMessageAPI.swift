@@ -23,7 +23,7 @@ class DDReceiveMessageAPI: DDUnrequestSuperAPI, DDAPIUnrequestScheduleProtocol {
             do {
                 let msgData = try IM_Message_IMMsgData.init(protobuf: data as Data)
                 let msg = try MTTMessageEntity.makeMessageFromPBData(data: msgData)
-                msg.state = .DDmessageSendSuccess
+                msg.state = .DDMessageSendSuccess
                 return msg
             } catch {
                 DDLog("解析接收消息出错！")

@@ -10,7 +10,7 @@ import UIKit
 import MBProgressHUD
 import SCLAlertView_Objective_C
 
-class LoginViewController: UIViewController, UITextFieldDelegate {
+class LoginViewController: MTTBaseViewController, UITextFieldDelegate {
     
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {

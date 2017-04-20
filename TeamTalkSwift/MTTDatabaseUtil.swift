@@ -290,7 +290,7 @@ class MTTDatabaseUtil {
                 do {
                     let infoJsonData = try JSONSerialization.data(withJSONObject: message.info, options: .prettyPrinted)
                     let json = String.init(data: infoJsonData, encoding: String.Encoding.utf8)
-                    let result = self.database?.executeUpdate(sql, withArgumentsIn: [message.msgID, message.sessionId, message.senderId, message.toUserID, message.msgContent, message.state, message.msgTime, Int(1), message.msgContentType.rawValue, message.msgType.rawValue, json!, Int(0), ""])
+                    let result = self.database?.executeUpdate(sql, withArgumentsIn: [message.msgID, message.sessionId, message.senderId, message.toUserID, message.msgContent, message.state.rawValue, message.msgTime, Int(1), message.msgContentType.rawValue, message.msgType.rawValue, json!, Int(0), ""])
                     if !result! {
                         isRollBack = true
                     }
@@ -345,7 +345,7 @@ class MTTDatabaseUtil {
             do {
                 let infoJsonData = try JSONSerialization.data(withJSONObject: message.info, options: .prettyPrinted)
                 let json = String.init(data: infoJsonData, encoding: String.Encoding.utf8)
-                let result = self.database?.executeUpdate(sql, withArgumentsIn: [message.sessionId, message.senderId, message.toUserID, message.msgContent, message.state, message.msgTime, message.sessionType.rawValue, message.msgType.rawValue, message.msgContentType.rawValue, json!, message.msgID])
+                let result = self.database?.executeUpdate(sql, withArgumentsIn: [message.sessionId, message.senderId, message.toUserID, message.msgContent, message.state.rawValue, message.msgTime, message.sessionType.rawValue, message.msgType.rawValue, message.msgContentType.rawValue, json!, message.msgID])
                 DispatchQueue.main.async {
                     completion(result!)
                 }
@@ -366,13 +366,14 @@ class MTTDatabaseUtil {
         let msgTime = resultSet.double(forColumn: "msgTime")
         let messageType :IM_BaseDefine_MsgType = IM_BaseDefine_MsgType(rawValue: Int(resultSet.int(forColumn: "messageType")))!
         let messageContentType = resultSet.int(forColumn: "messageContentType")
+        //let messageContentType = DDMessageContentType(rawValue: UInt(resultSet.int(forColumn: "messageContentType")))
         //let messageID = resultSet.int(forColumn: "messageID")
         let messageID = resultSet.unsignedLongLongInt(forColumn: "messageID")
         let messageState = resultSet.int(forColumn: "status")
         
         let messageEntity = MTTMessageEntity.init(ID: UInt32(messageID), msgType: IM_BaseDefine_MsgType(rawValue: messageType.rawValue)!, msgTime: msgTime, sessionID: sessionID!, senderID: fromUserId!, msgContent: content!, toUserID: toUserId!)
-        messageEntity.state = MTTMessageEntity.DDMessageState(rawValue: UInt(messageState))!
-        messageEntity.msgContentType = MTTMessageEntity.DDMessageContentType(rawValue: UInt(messageContentType))!
+        messageEntity.state = DDMessageState(rawValue: UInt(messageState))!
+        messageEntity.msgContentType = DDMessageContentType(rawValue: UInt(messageContentType))!
         let infoString = resultSet.string(forColumn: "info")
         if (infoString != nil) {
             let infoData: Data = (infoString?.data(using: String.Encoding.utf8))!
@@ -606,8 +607,10 @@ class MTTDatabaseUtil {
             var isRollBack = false
             let sql = String.init(format: "INSERT OR REPLACE INTO %@ VALUES(?,?,?,?,?,?,?,?,?,?)", TABLE_RECENT_SESSION)
             var users: String = ""
-            if (session.sessionUsers?.count)! > 0 {
-                users = (session.sessionUsers?.joined(separator: "-"))!
+            if session.sessionUsers != nil {
+                if (session.sessionUsers?.count)! > 0 {
+                    users = (session.sessionUsers?.joined(separator: "-"))!
+                }
             }
             let result = self.database?.executeUpdate(sql, withArgumentsIn: [session.sessionID, session.avatar, session.sessionType.rawValue, session.name, session.timeInterval, session.isShield, users, session.unReadMsgCount, session.lastMsg, session.lastMsgID])
             if !result! {
@@ -677,7 +680,14 @@ class MTTDatabaseUtil {
         })
     }
     
-    func deleteMessage(message: MTTMessageEntity, completion: DeleteSessionCompletion) {
+    func deleteMessage(message: MTTMessageEntity, completion: @escaping DeleteSessionCompletion) {
+        self.dataBaseQueue?.inDatabase({ (db: FMDatabase?) in
+            let sql = "DELETE FROM message WHERE messageID = ?"
+            let result = self.database?.executeUpdate(sql, withArgumentsIn: [message.msgID])
+            DispatchQueue.main.async {
+                completion(result!)
+            }
+        })
     }
     
     func loadGroupByIDCompletion(groupID: String, completion: @escaping LoadRecentContactsComplection) {
@@ -748,7 +758,7 @@ class MTTDatabaseUtil {
         let sessionType = IM_BaseDefine_SessionType.init(rawValue: Int(resultSet.int(forColumn: "type")))
         let session = MTTSessionEntity.init(sessionID: resultSet.string(forColumn: "ID"), name: resultSet.string(forColumn: "name"), type: sessionType!)
         session.avatar = resultSet.string(forColumn: "avatar")
-        session.timeInterval = UInt(resultSet.long(forColumn: "updated"))
+        session.timeInterval = TimeInterval(resultSet.double(forColumn: "updated"))
         session.lastMsg = resultSet.string(forColumn: "lasMsg")
         //session.lastMsgID = UInt32(UInt(resultSet.long(forColumn: "lastMsgId")))
         session.lastMsgID = UInt32(resultSet.unsignedLongLongInt(forColumn: "lastMsgId"))

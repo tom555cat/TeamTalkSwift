@@ -14,12 +14,12 @@ class MTTBaseEntity{
     
     var objID: String?
     
-    var objectVersion: Int = 0
+    var objectVersion: UInt32 = 0
     
-    func getOriginalID() -> UInt {
+    func getOriginalID() -> UInt32 {
         let array = self.objID?.components(separatedBy: "_")
         if (array?.count)! >= 2 {
-            return UInt(array![1])!
+            return UInt32(array![1])!
         }
         return 0
     }

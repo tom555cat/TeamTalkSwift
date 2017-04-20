@@ -35,8 +35,8 @@ class DDUserModule {
         allUsersNick?[(user?.nick)!] = user!
     }
     
-    func getUserFor(userID: String, block: (MTTUserEntity)->Void) {
-        return block(allUsers![userID] as! MTTUserEntity)
+    func getUserFor(userID: String, block: (MTTUserEntity?)->Void) {
+        return block(allUsers![userID] as? MTTUserEntity)
     }
     
     func addRecentUser(user: MTTUserEntity?) {
@@ -63,8 +63,8 @@ class DDUserModule {
         DDUserModule.sharedInstance.recentUsers?.removeAll()
     }
     
-    func getAllMaintenance() -> [Any] {
-        return Array((allUsers?.values)!)
+    func getAllMaintenance() -> [MTTUserEntity] {
+        return Array((allUsers?.values)!) as! [MTTUserEntity]
     }
     
     func getUserByNick(nickName: String) -> MTTUserEntity {

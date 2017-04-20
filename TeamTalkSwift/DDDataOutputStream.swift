@@ -81,9 +81,9 @@ class DDDataOutputStream {
     }
     
     func writeDataCount() {
-        var ch = [Int8]()
-        for i in 0...3 {
-            ch.append(Int8((self.length >> ((3 - i)*8)) & 0x0ff))
+        var ch = [UInt8]()
+        for i in 0..<4 {
+            ch.append(UInt8((self.length >> ((3 - i)*8)) & 0x0ff))
         }
         self.data.replaceBytes(in: NSMakeRange(0, 4), withBytes: ch)
     }
@@ -93,5 +93,5 @@ class DDDataOutputStream {
     }
     
     var data: NSMutableData = NSMutableData()
-    var length: Int = 0
+    var length: Int32 = 0
 }

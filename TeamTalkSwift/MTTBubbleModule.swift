@@ -89,10 +89,10 @@ class MTTBubbleConfig {
             }
             
             var textColorTemp = (dic["textColor"] as! String).components(separatedBy: ",")
-            self.textColor = RGB(r: Int(textColorTemp[0])!, g: Int(textColorTemp[1])!, b: Int(textColorTemp[2])!)
+            self.textColor = RGB(Int(textColorTemp[0])!, Int(textColorTemp[1])!, Int(textColorTemp[2])!)
             
             let linkColorTemp = (dic["linkColor"] as! String).components(separatedBy: ",")
-            self.linkColor = RGB(r: Int(linkColorTemp[0])!, g: Int(linkColorTemp[1])!, b: Int(linkColorTemp[2])!)
+            self.linkColor = RGB(Int(linkColorTemp[0])!, Int(linkColorTemp[1])!, Int(linkColorTemp[2])!)
             
             let bubbleType = MTTUtil.getBubbleTypeLeft(left: left)
             if left {

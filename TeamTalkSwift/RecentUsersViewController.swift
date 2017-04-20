@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RecentUsersViewController: UIViewController, UISearchBarDelegate, SessionModuleDelegate, UITableViewDelegate, UITableViewDataSource {
+class RecentUsersViewController: MTTBaseViewController, UISearchBarDelegate, SessionModuleDelegate, UITableViewDelegate, UITableViewDataSource {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -72,6 +72,11 @@ class RecentUsersViewController: UIViewController, UISearchBarDelegate, SessionM
         
         // 初始化searchTableView
         // [self addSearchTableView];
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.tabBarController?.tabBar.isHidden = false
     }
 
     override func didReceiveMemoryWarning() {
@@ -266,12 +271,7 @@ class RecentUsersViewController: UIViewController, UISearchBarDelegate, SessionM
             let session = self.items?[row]
             ChattingMainViewController.sharedInstance.title = session?.name
             ChattingMainViewController.sharedInstance.showChattingContent(forSession: session!)
-            
-            if self.tabBarController == nil {
-                self.navigationController?.pushViewController(ChattingMainViewController.sharedInstance, animated: true)
-            } else {
-                self.tabBarController?.navigationController?.pushViewController(ChattingMainViewController.sharedInstance, animated: true)
-            }
+            self.navigationController?.pushViewController(ChattingMainViewController.sharedInstance, animated: true)
         }
     }
     

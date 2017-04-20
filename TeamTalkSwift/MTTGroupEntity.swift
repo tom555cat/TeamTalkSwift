@@ -55,7 +55,7 @@ class MTTGroupEntity: MTTBaseEntity {
             }
         }
         group.lastMsg = dic["lastMessage"] as! String
-        group.objectVersion = dic["version"] as! Int
+        group.objectVersion = dic["version"] as! UInt32
         group.lastUpdateTime = dic["lastUpdateTime"] as! Int32
         return group
     }
@@ -67,7 +67,7 @@ class MTTGroupEntity: MTTBaseEntity {
     class func initMTTGroupEntityFromPBData(groupInfo: IM_BaseDefine_GroupInfo) -> MTTGroupEntity {
         let group = MTTGroupEntity()
         group.objID = pbGroupIdToLocalID(groupID: groupInfo.groupId)
-        group.objectVersion = Int(groupInfo.version)
+        group.objectVersion = UInt32(groupInfo.version)
         group.name = groupInfo.groupName
         group.avatar = groupInfo.groupAvatar
         group.groupCreatorId = MTTUtil.changeOriginalToLocalID(originalID: groupInfo.groupCreatorId, sessionType: IM_BaseDefine_SessionType.single)

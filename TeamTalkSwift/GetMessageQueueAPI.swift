@@ -41,7 +41,7 @@ class GetMessageQueueAPI: DDSuperAPI, DDAPIScheduleProtocol {
                 for msgInfo in rsp.msgList {
                     let msg = try MTTMessageEntity.makeMessageFromPB(info: msgInfo, sessionType: sessionType)
                     msg.sessionId = sessionID
-                    msg.state = .DDmessageSendSuccess
+                    msg.state = .DDMessageSendSuccess
                     msgArray.append(msg)
                 }
                 return msgArray

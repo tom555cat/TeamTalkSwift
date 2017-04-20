@@ -10,7 +10,7 @@ import Foundation
 
 typealias Analysis = (NSData) -> Any?
 
-typealias Package = (Any?, UInt16) -> NSMutableData?
+typealias Package = (Any, UInt16) -> NSMutableData?
 
 protocol DDAPIScheduleProtocol {
     
